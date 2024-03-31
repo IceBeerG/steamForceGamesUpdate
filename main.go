@@ -113,31 +113,6 @@ func changeUpdate(filename, gameName string) {
 
 }
 
-// func changeUpdate(file_manifest, gameName string) {
-// 	content, err := ioutil.ReadFile(file_manifest)
-// 	if err != nil {
-// 		fmt.Println("Error reading file:", err)
-// 		return
-// 	}
-
-// 	lines := strings.Split(string(content), "\n")
-// 	for i, line := range lines {
-// 		if strings.Contains(line, "AutoUpdateBehavior") && strings.Contains(line, "0") {
-// 			lines[i] = strings.Replace(line, "0", "2", -1)
-// 			// lines[i] = strings.Replace(line, "2", "0", -1)
-// 			fmt.Println(file_manifest, "обновлен. Игра -", gameName)
-// 		}
-
-// 	}
-
-// 	output := strings.Join(lines, "\n")
-// 	err = ioutil.WriteFile(file_manifest, []byte(output), 0644)
-// 	if err != nil {
-// 		fmt.Println("Error writing to file:", err)
-// 		return
-// 	}
-// }
-
 // получаем данные из реестра
 func regGet(regFolder, keys string) string {
 	key, err := registry.OpenKey(registry.LOCAL_MACHINE, regFolder, registry.QUERY_VALUE)
