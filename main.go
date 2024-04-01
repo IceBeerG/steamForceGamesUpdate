@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -14,22 +13,6 @@ import (
 
 func main() {
 
-	checkLog := "check.log"
-	_, err := os.Stat(checkLog)
-	if os.IsNotExist(err) {
-		_, err := os.Create(checkLog)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
-	checkLogAllert := "checkAllert.log"
-	_, err = os.Stat(checkLogAllert)
-	if os.IsNotExist(err) {
-		_, err := os.Create(checkLogAllert)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
 	var gameName string
 	steamPath := regGet(`SOFTWARE\WOW6432Node\Valve\Steam`, "InstallPath") // получаем папку стима
 	vdfSteam := steamPath + `\steamapps\libraryfolders.vdf`                // файл со списком библиотек стима
@@ -68,13 +51,13 @@ func changeUpdate(filename, gameName string) {
 
 	file, err := os.Open(filename)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 	defer file.Close()
 
 	tempFile, err := os.Create(tempFilePath)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 	defer tempFile.Close()
 
@@ -89,7 +72,7 @@ func changeUpdate(filename, gameName string) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 
 	file.Close()
@@ -97,10 +80,10 @@ func changeUpdate(filename, gameName string) {
 
 	if check {
 		if err := os.Rename(filename, filename+".bak"); err != nil {
-			log.Fatal(err)
+			fmt.Println(err)
 		}
 		if err := os.Rename(tempFilePath, filename); err != nil {
-			log.Fatal(err)
+			fmt.Println(err)
 		}
 		fmt.Println(filename, "обновлен. Игра -", gameName)
 	} else {
@@ -117,13 +100,13 @@ func changeUpdate(filename, gameName string) {
 func regGet(regFolder, keys string) string {
 	key, err := registry.OpenKey(registry.LOCAL_MACHINE, regFolder, registry.QUERY_VALUE)
 	if err != nil {
-		log.Printf("Ошибка открытия ветки реестра: %v. %s\n", err, getLine())
+		fmt.Printf("Ошибка открытия ветки реестра: %v. %s\n", err, getLine())
 	}
 	defer key.Close()
 
 	value, _, err := key.GetStringValue(keys)
 	if err != nil {
-		log.Printf("Ошибка чтения папки стима: %v. %s\n", err, getLine())
+		fmt.Printf("Ошибка чтения папки стима: %v. %s\n", err, getLine())
 	}
 	return value
 }
