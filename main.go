@@ -14,6 +14,8 @@ import (
 func main() {
 
 	var gameName string
+	var count int
+
 	steamPath := regGet(`SOFTWARE\WOW6432Node\Valve\Steam`, "InstallPath") // получаем папку стима
 	vdfSteam := steamPath + `\steamapps\libraryfolders.vdf`                // файл со списком библиотек стима
 
@@ -35,19 +37,25 @@ func main() {
 				fmt.Println(err)
 			}
 
-			changeUpdate(file_manifest, gameName)
+			count += changeUpdate(file_manifest, gameName)
 
 		}
 	}
 
-	fmt.Printf("\nПроверка завершена, все игры настроены на обновление с высоким приоритетом")
-	fmt.Printf("\nПерезапустите steam для применения настроек. Окно можно закрывать")
+	if count > 0 {
+		fmt.Printf("\nПроверка завершена, количество перенастроенных игр -  %d\n", count)
+		fmt.Println("Перезапустите steam для применения настроек. Окно можно закрывать")
+	} else {
+		fmt.Printf("\nПеренастройка не требуется. Окно можно закрывать")
+	}
 	g := ""
 	fmt.Scan(&g)
+
 }
 
-func changeUpdate(filename, gameName string) {
+func changeUpdate(filename, gameName string) (count int) {
 	var check bool
+
 	tempFilePath := filename + ".temp"
 
 	file, err := os.Open(filename)
@@ -87,14 +95,14 @@ func changeUpdate(filename, gameName string) {
 			fmt.Println(err)
 		}
 		fmt.Println(filename, "обновлен. Игра -", gameName)
+		count = 1
 	} else {
 		err := os.Remove(tempFilePath)
 		if err != nil {
 			fmt.Println(err)
-			return
 		}
 	}
-
+	return
 }
 
 // получаем данные из реестра
