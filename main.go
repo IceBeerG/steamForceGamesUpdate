@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
-	"time"
 
 	"golang.org/x/sys/windows/registry"
 )
@@ -39,8 +38,6 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	time.Sleep(5 * time.Second)
 
 	for _, path := range steamLibrary {
 		manifest, err := filepath.Glob(path + `\appmanifest_*.acf`)
@@ -99,6 +96,9 @@ func changeUpdate(filename, gameName string) {
 	tempFile.Close()
 
 	if check {
+		if err := os.Rename(filename, filename+".bak"); err != nil {
+			log.Fatal(err)
+		}
 		if err := os.Rename(tempFilePath, filename); err != nil {
 			log.Fatal(err)
 		}
