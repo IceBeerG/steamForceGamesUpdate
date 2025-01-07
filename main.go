@@ -77,6 +77,10 @@ func changeUpdate(filename, gameName string) (count int) {
 			line = strings.Replace(line, "0", "2", -1)
 			check = true
 		}
+		if strings.Contains(line, "AllowOtherDownloadsWhileRunning") && strings.Contains(line, "0") {
+			line = strings.Replace(line, "0", "2", -1)
+			check = true
+		}
 		tempFile.WriteString(line + "\n")
 	}
 
